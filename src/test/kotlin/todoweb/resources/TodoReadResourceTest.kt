@@ -11,12 +11,13 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import todoweb.core.Task
-import todoweb.core.Todo
 
-import todoweb.db.TodoDao
+import todoweb.core.domain.Task
+import todoweb.core.domain.Todo
 import todoweb.resources.impl.TodoReadResourceImpl
-import javax.ws.rs.NotFoundException
+import todoweb.service.TodoReadService
+import todoweb.utils.TodoAppException
+
 import javax.ws.rs.core.Response
 
 /**
@@ -26,8 +27,8 @@ import javax.ws.rs.core.Response
  */
 class TodoReadResourceTest {
 
-    private val todoDao = mockk<TodoDao>()
-    private val todoReadResource = TodoReadResourceImpl(todoDao)
+    private val todoReadService = mockk<TodoReadService>()
+    private val todoReadResource = TodoReadResourceImpl(todoReadService)
 
     @BeforeEach
     fun setUp() {
@@ -39,14 +40,14 @@ class TodoReadResourceTest {
 
         @Test
         fun `test getAll todos`() {
-            every { todoDao.getAll() } returns listOf(todo)
+            every { todoReadService.getAll() } returns listOf(todo)
             val response = todoReadResource.getAll()
             assertEquals(listOf(todo), response.entity)
         }
 
         @Test
         fun `test getAll todos throws exception`() {
-            every { todoDao.getAll() } throws NotFoundException(NOT_FOUND_TODO_WITH_ID(id))
+            every { todoReadService.getAll() } throws TodoAppException(NOT_FOUND_TODO_WITH_ID(id))
             val response = todoReadResource.getAll()
             assertEquals(Response.Status.INTERNAL_SERVER_ERROR.statusCode, response.status)
         }
@@ -58,14 +59,14 @@ class TodoReadResourceTest {
 
         @Test
         fun `test getTodoById when valid id is passed`() {
-            every { todoDao.getTodoById(id) } returns todo
+            every { todoReadService.getTodoById(id) } returns todo
             val response = todoReadResource.getTodoById(id)
             assertEquals(todo, response.entity)
         }
 
         @Test
         fun `test getTodoById with invalid id`() {
-            every { todoDao.getTodoById(id) } throws NotFoundException(NOT_FOUND_TODO_WITH_ID(id))
+            every { todoReadService.getTodoById(id) } throws TodoAppException(NOT_FOUND_TODO_WITH_ID(id))
             val response = todoReadResource.getTodoById(id)
             assertEquals(NOT_FOUND_TODO_WITH_ID(id), response.entity)
         }

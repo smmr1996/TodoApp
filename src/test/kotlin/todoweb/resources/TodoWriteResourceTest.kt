@@ -1,23 +1,25 @@
 /**
- * It's a Copyright doc
+ * It's a Copyright doc 2023
  */
 package todoweb.resources
 
 import io.mockk.clearAllMocks
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-import todoweb.core.Task
-import todoweb.core.Todo
-import todoweb.db.TodoDao
+import todoweb.core.domain.Task
+import todoweb.core.domain.Todo
 import todoweb.resources.impl.TodoWriteResourceImpl
+import todoweb.service.TodoWriteService
+import todoweb.utils.TodoAppException
 
-import javax.ws.rs.NotFoundException
 import javax.ws.rs.core.Response
 
 /**
@@ -27,8 +29,8 @@ import javax.ws.rs.core.Response
  */
 class TodoWriteResourceTest {
 
-    private val todoDao = mockk<TodoDao>()
-    private val todoWriteResource = TodoWriteResourceImpl(todoDao)
+    private val todoWriteService = mockk<TodoWriteService>()
+    private val todoWriteResource = TodoWriteResourceImpl(todoWriteService)
 
     @BeforeEach
     fun setUp() {
@@ -40,14 +42,14 @@ class TodoWriteResourceTest {
 
         @Test
         fun `test addTodo success`() {
-            every { todoDao.addTodo(todo) } returns todo
+            every { todoWriteService.addTodo(todo) } returns todo
             val response = todoWriteResource.addTodo(todoJson)
             assertEquals(todo, response.entity)
         }
 
         @Test
         fun `test addTodo fails`() {
-            every { todoDao.addTodo(todo) } throws Exception("E")
+            every { todoWriteService.addTodo(todo) } throws RuntimeException("E")
             val response = todoWriteResource.addTodo(todoJson)
             assertEquals(Response.Status.INTERNAL_SERVER_ERROR.statusCode, response.status)
         }
@@ -58,15 +60,15 @@ class TodoWriteResourceTest {
 
         @Test
         fun `test updateTodoWithId success`() {
-            every { todoDao.updateTodoById(id, todo) } returns todo
+            every { todoWriteService.updateTodoById(id, todo) } just runs
             val response = todoWriteResource.updateTodoById(id, todoJson)
-            assertEquals(todo, response.entity)
+            assertEquals("Successfully updated", response.entity)
         }
 
         @Test
         fun `test updateTodoWithId fails`() {
-            every { todoDao.updateTodoById(id, todo) } throws
-                    NotFoundException(NOT_FOUND_TODO_WITH_ID(id))
+            every { todoWriteService.updateTodoById(id, todo) } throws
+                    TodoAppException(NOT_FOUND_TODO_WITH_ID(id))
             val response = todoWriteResource.updateTodoById(id, todoJson)
             assertEquals(NOT_FOUND_TODO_WITH_ID(id), response.entity)
         }

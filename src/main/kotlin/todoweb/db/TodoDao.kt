@@ -3,61 +3,39 @@
  */
 package todoweb.db
 
-import todoweb.core.Todo
-import todoweb.utils.TodoConstants.Companion.NOT_FOUND_TODO_WITH_ID
+import org.jdbi.v3.sqlobject.SqlObject
+import org.jdbi.v3.sqlobject.config.RegisterRowMapper
+import org.jdbi.v3.sqlobject.customizer.Bind
+import org.jdbi.v3.sqlobject.customizer.BindBean
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys
+import org.jdbi.v3.sqlobject.statement.SqlQuery
+import org.jdbi.v3.sqlobject.statement.SqlUpdate
 
-import javax.ws.rs.NotFoundException
+import todoweb.core.domain.Todo
+import todoweb.core.mapper.TodoMapper
+
 
 /**
- * Data Access Layer to Read/Write/Delete To-Do tasks
+ * DAO interface to map perform CRUD operations on Todo Table.
  *
  * @author Syed Mohammad Mehdi
  */
-class TodoDao {
-    private val map = mutableMapOf<Long, Todo>()
+@RegisterRowMapper(TodoMapper::class)
+interface TodoDao: SqlObject {
 
-    /**
-     * A method to return all the "To-dos". Returns a list of [Todo]
-     */
-    fun getAll(): List<Todo> {
-        return map.values.toList()
-    }
+    @SqlQuery("SELECT * FROM todo WHERE id = :id")
+    fun findById(@Bind("id") id: Long): Todo?
 
-    /**
-     * A method to add the [Todo]. It persists the object in the DB and returns it.
-     */
-    fun addTodo(todo: Todo): Todo {
-        todo.id = (map.size + 1).toLong()
-        map[todo.id] = todo
-        return todo
-    }
+    @SqlQuery("SELECT * FROM todo")
+    fun findAll(): List<Todo>
 
-    /**
-     * A method to return a [Todo] with [id] else throws [NotFoundException].
-     */
-    fun getTodoById(id: Long): Todo {
-        return map[id] ?: throw NotFoundException(NOT_FOUND_TODO_WITH_ID(id))
-    }
+    @SqlUpdate("DELETE FROM todo WHERE id = :id")
+    fun deleteById(@Bind("id") id: Long)
 
-    /**
-     * A method to update and return a [Todo] with matching [id] else throws [NotFoundException].
-     */
-    fun updateTodoById(id: Long, todo: Todo): Todo {
-        if (map[id] == null) {
-            throw NotFoundException(NOT_FOUND_TODO_WITH_ID(id))
-        }
-        todo.id = id
-        map[id] = todo
-        return todo
-    }
+    @SqlUpdate("INSERT INTO todo (id, name, description) VALUES (:id, :name, :description)")
+    @GetGeneratedKeys
+    fun insertTodo(@BindBean todo: Todo): Long
 
-    /**
-     * A method to delete a [Todo] with matching [id] else throws [NotFoundException].
-     */
-    fun deleteToDoById(id: Long) {
-        if (map[id] == null) {
-            throw NotFoundException(NOT_FOUND_TODO_WITH_ID(id))
-        }
-        map.remove(id)
-    }
+    @SqlUpdate("UPDATE todo SET name = :name, description = :description WHERE id = :todoId")
+    fun updateById(@BindBean todo: Todo, @Bind("todoId") todoId: Long): Int
 }

@@ -7,9 +7,9 @@ import javax.ws.rs.PathParam
 import javax.ws.rs.core.Response
 
 /**
- * Interface to Read Todos
+ * Interface to Delete Todos
  *
- * This interface defines the methods to get "To-dos" from the Data Source.
+ * This interface defines the methods to delete "To-dos" from the Data Source.
  *
  * @author Syed Mohammad Mehdi
  */
