@@ -4,20 +4,20 @@
 package todoweb.service
 
 import todoweb.core.domain.Todo
+
 import javax.ws.rs.core.Response
 
 /**
  * Interface to Read Todos
  *
- * This interface defines the methods to get "To-dos" from the Data Source.
+ * This interface defines the methods to get "To-do".
  *
  * @author Syed Mohammad Mehdi
  */
 interface TodoReadService {
 
     /**
-     * A GET method to return all the "To-dos". Returns a [Response] with list of all "To-Dos"
-     * or Exception/Error messages.
+     * A method to read return all the "To-dos". Returns a list of [Todo] or Exception/Error messages.
      */
     fun getAll(): List<Todo>
 

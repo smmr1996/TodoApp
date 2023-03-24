@@ -1,27 +1,45 @@
+/**
+ * It's a Copyright doc 2023
+ */
 package todoweb.service.impl
+
+import io.dropwizard.hibernate.UnitOfWork
 
 import todoweb.core.domain.Task
 import todoweb.core.domain.Todo
-import todoweb.db.TaskDbDao
-import todoweb.db.TodoDbDao
+import todoweb.db.TaskDao
+import todoweb.db.TodoDao
 import todoweb.service.TodoWriteService
+import todoweb.utils.TodoAppException
+import todoweb.utils.TodoConstants
+
+import java.lang.RuntimeException
 
 class TodoWriteServiceImpl(
-    private val todoDbDao: TodoDbDao,
-    private val taskDbDao: TaskDbDao
+    private val todoDao: TodoDao,
+    private val taskDao: TaskDao
 ) : TodoWriteService {
 
+    @UnitOfWork
     override fun addTodo(todo: Todo): Todo {
-        todoDbDao.insertTodo(todo)
+        val id = todoDao.insertTodo(todo)
+        todo.id = id
         if (todo.tasks != null) {
-            taskDbDao.insertTasks(todo.tasks as List<Task>, todo.id)
+            taskDao.insertTasks(todo.tasks as List<Task>, id)
         }
         return todo
     }
 
-    override fun updateTodoById(id: Long, todo: Todo): Todo {
-        TODO("Not yet implemented")
+    @UnitOfWork
+    override fun updateTodoById(id: Long, todo: Todo) {
+        if (todoDao.updateById(todo, id) == 0) {
+            throw TodoAppException(TodoConstants.NOT_FOUND_TODO_WITH_ID(id))
+        }
+        try {
+            taskDao.deleteById(id)
+            todo.tasks?.let { taskDao.insertTasks(it, id) }
+        } catch (e: RuntimeException) {
+            throw TodoAppException("Exception occurred: ${e.message}")
+        }
     }
-
-
 }

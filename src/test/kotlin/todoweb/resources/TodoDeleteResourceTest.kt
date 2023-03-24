@@ -13,11 +13,10 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-import todoweb.db.TodoDao
 import todoweb.resources.impl.TodoDeleteResourceImpl
 import todoweb.service.TodoDeleteService
+import todoweb.utils.TodoAppException
 
-import javax.ws.rs.NotFoundException
 import javax.ws.rs.core.Response.Status
 
 /**
@@ -46,7 +45,7 @@ class TodoDeleteResourceTest {
     @Test
     fun `test deleteTodoById when invalid id is passed`() {
         val id = id
-        every { todoDeleteService.deleteTodoById(id) } throws NotFoundException((NOT_FOUND_TODO_WITH_ID(id)))
+        every { todoDeleteService.deleteTodoById(id) } throws TodoAppException((NOT_FOUND_TODO_WITH_ID(id)))
         val response = todoDeleteResource.deleteTodoById(id)
         assertEquals(Status.NOT_FOUND.statusCode, response.status)
     }

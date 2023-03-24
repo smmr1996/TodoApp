@@ -5,10 +5,10 @@ package todoweb.resources.impl
 
 import todoweb.resources.TodoReadResource
 import todoweb.service.TodoReadService
+import todoweb.utils.TodoAppException
 
 import javax.ws.rs.Consumes
 import javax.ws.rs.GET
-import javax.ws.rs.NotFoundException
 import javax.ws.rs.Path
 import javax.ws.rs.PathParam
 import javax.ws.rs.Produces
@@ -32,7 +32,7 @@ class TodoReadResourceImpl(
     override fun getAll(): Response {
         return try {
             Response.ok(todoReadService.getAll()).build()
-        } catch (e: Exception) {
+        } catch (e: TodoAppException) {
             return Response
                 .status(Status.INTERNAL_SERVER_ERROR)
                 .entity("Some internal error")
@@ -45,7 +45,7 @@ class TodoReadResourceImpl(
     override fun getTodoById(@PathParam("id") id: Long): Response {
         return try {
             Response.ok(todoReadService.getTodoById(id)).build()
-        } catch (e: NotFoundException) {
+        } catch (e: TodoAppException) {
             Response.status(Status.NOT_FOUND).entity(e.message).build()
         }
     }

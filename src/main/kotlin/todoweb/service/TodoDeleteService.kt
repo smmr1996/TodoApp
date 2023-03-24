@@ -3,21 +3,22 @@
  */
 package todoweb.service
 
+import todoweb.utils.TodoAppException
+
 import javax.ws.rs.PathParam
-import javax.ws.rs.core.Response
 
 /**
- * Interface to Delete Todos
+ * Service Interface to Delete Todos
  *
- * This interface defines the methods to get "To-dos" from the Data Source.
+ * This interface defines the methods to delete "To-dos".
  *
  * @author Syed Mohammad Mehdi
  */
 interface TodoDeleteService {
 
     /**
-     * A Delete method to delete the "To-do" with a particular [id]. Returns a [Response] with
-     * Success or Failure message.
+     * A Delete method to delete the "To-do" with a particular [id]. Throws [TodoAppException]
+     * if the Todo with the [id] is not found.
      */
     fun deleteTodoById(@PathParam("id") id: Long)
 }

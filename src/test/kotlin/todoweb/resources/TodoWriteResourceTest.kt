@@ -1,11 +1,13 @@
 /**
- * It's a Copyright doc
+ * It's a Copyright doc 2023
  */
 package todoweb.resources
 
 import io.mockk.clearAllMocks
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -16,8 +18,8 @@ import todoweb.core.domain.Task
 import todoweb.core.domain.Todo
 import todoweb.resources.impl.TodoWriteResourceImpl
 import todoweb.service.TodoWriteService
+import todoweb.utils.TodoAppException
 
-import javax.ws.rs.NotFoundException
 import javax.ws.rs.core.Response
 
 /**
@@ -47,7 +49,7 @@ class TodoWriteResourceTest {
 
         @Test
         fun `test addTodo fails`() {
-            every { todoWriteService.addTodo(todo) } throws Exception("E")
+            every { todoWriteService.addTodo(todo) } throws RuntimeException("E")
             val response = todoWriteResource.addTodo(todoJson)
             assertEquals(Response.Status.INTERNAL_SERVER_ERROR.statusCode, response.status)
         }
@@ -58,15 +60,15 @@ class TodoWriteResourceTest {
 
         @Test
         fun `test updateTodoWithId success`() {
-            every { todoWriteService.updateTodoById(id, todo) } returns todo
+            every { todoWriteService.updateTodoById(id, todo) } just runs
             val response = todoWriteResource.updateTodoById(id, todoJson)
-            assertEquals(todo, response.entity)
+            assertEquals("Successfully updated", response.entity)
         }
 
         @Test
         fun `test updateTodoWithId fails`() {
             every { todoWriteService.updateTodoById(id, todo) } throws
-                    NotFoundException(NOT_FOUND_TODO_WITH_ID(id))
+                    TodoAppException(NOT_FOUND_TODO_WITH_ID(id))
             val response = todoWriteResource.updateTodoById(id, todoJson)
             assertEquals(NOT_FOUND_TODO_WITH_ID(id), response.entity)
         }
@@ -81,7 +83,7 @@ class TodoWriteResourceTest {
         val todo = Todo(
             id,
             TEST_NAME,
-            TEST_DESCRIPTION, listOf(Task(0L, TEST_NAME, TEST_DESCRIPTION)))
+            TEST_DESCRIPTION, listOf(Task(TEST_NAME, TEST_DESCRIPTION)))
         val todoJson = """
             {
                 "name": "$TEST_NAME",

@@ -4,23 +4,25 @@
 package todoweb.service
 
 import todoweb.core.domain.Todo
-import javax.ws.rs.PathParam
-import javax.ws.rs.core.Response
+import todoweb.utils.TodoAppException
 
 /**
  * Interface to Write Todos
  *
- * This interface defines the methods to get "To-dos" from the Data Source.
+ * This interface defines the methods to write "To-dos".
  *
  * @author Syed Mohammad Mehdi
  */
 interface TodoWriteService {
 
     /**
-     * A Delete method to delete the "To-do" with a particular [id]. Returns a [Response] with
-     * Success or Failure message.
+     * A method to add the [todo]. Returns the persisted [Todo] with id.
      */
     fun addTodo(todo: Todo): Todo
 
-    fun updateTodoById(id: Long, todo: Todo): Todo
+    /**
+     * A method to update the [todo] with a particular [id]. Throws [TodoAppException] with
+     * relevant errors.
+     */
+    fun updateTodoById(id: Long, todo: Todo)
 }

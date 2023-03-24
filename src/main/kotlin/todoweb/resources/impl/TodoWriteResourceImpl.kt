@@ -6,12 +6,13 @@ package todoweb.resources.impl
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 
 import todoweb.core.domain.Todo
-import todoweb.db.TodoDao
 import todoweb.resources.TodoWriteResource
 import todoweb.service.TodoWriteService
+import todoweb.utils.TodoAppException
+
+import java.lang.RuntimeException
 
 import javax.ws.rs.Consumes
-import javax.ws.rs.NotFoundException
 import javax.ws.rs.POST
 import javax.ws.rs.PUT
 import javax.ws.rs.Path
@@ -40,8 +41,10 @@ class TodoWriteResourceImpl(
         val mapper = jacksonObjectMapper()
         val todo: Todo = mapper.readValue(todoJson, Todo::class.java)
         return try {
-            Response.ok(todoWriteService.updateTodoById(id, todo)).build()
-        } catch (e: NotFoundException) {
+            Response.ok(todoWriteService.updateTodoById(id, todo))
+                .entity("Successfully updated")
+                .build()
+        } catch (e: TodoAppException) {
             Response.status(Status.NOT_FOUND).entity(e.message).build()
         }
     }
@@ -50,11 +53,10 @@ class TodoWriteResourceImpl(
     override fun addTodo(@QueryParam("todo") todoJson: String): Response {
         val mapper = jacksonObjectMapper()
         val todo: Todo = mapper.readValue(todoJson, Todo::class.java)
-        return Response.ok(todoWriteService.addTodo(todo)).build()
-//        return try {
-//            Response.ok(todoWriteService.addTodo(todo)).build()
-//        } catch (e: Exception) {
-//            Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.message).build()
-//        }
+        return try {
+            Response.ok(todoWriteService.addTodo(todo)).build()
+        } catch (e: RuntimeException) {
+            Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.message).build()
+        }
     }
 }
