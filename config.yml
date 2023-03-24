@@ -2,3 +2,12 @@ logging:
   level: INFO
   loggers:
     TodoWeb: DEBUG
+
+database:
+  driverClass: com.mysql.cj.jdbc.Driver
+  url: jdbc:mysql://localhost:3306/emwa?useSSL=false
+  user: root
+  password: root
+  maxWaitForConnection: 1s
+  validationQuery: "SELECT 1"
+  validationQueryTimeout: 3s

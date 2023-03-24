@@ -11,11 +11,12 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import todoweb.core.Task
-import todoweb.core.Todo
+import todoweb.core.domain.Task
+import todoweb.core.domain.Todo
 
 import todoweb.db.TodoDao
 import todoweb.resources.impl.TodoReadResourceImpl
+import todoweb.service.TodoReadService
 import javax.ws.rs.NotFoundException
 import javax.ws.rs.core.Response
 
@@ -27,7 +28,8 @@ import javax.ws.rs.core.Response
 class TodoReadResourceTest {
 
     private val todoDao = mockk<TodoDao>()
-    private val todoReadResource = TodoReadResourceImpl(todoDao)
+    private val todoReadService = mockk<TodoReadService>()
+    private val todoReadResource = TodoReadResourceImpl(todoReadService)
 
     @BeforeEach
     fun setUp() {
@@ -79,6 +81,6 @@ class TodoReadResourceTest {
         val todo = Todo(
             id,
             TEST_NAME,
-            TEST_DESCRIPTION, listOf(Task(TEST_NAME, TEST_DESCRIPTION)))
+            TEST_DESCRIPTION, listOf(Task(0L, TEST_NAME, TEST_DESCRIPTION)))
     }
 }

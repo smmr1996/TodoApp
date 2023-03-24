@@ -3,7 +3,16 @@
  */
 package todoweb
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.dropwizard.Configuration
+import io.dropwizard.db.DataSourceFactory
+import javax.validation.Valid
+import javax.validation.constraints.NotNull
 
-class TodoWebConfiguration : Configuration() // TODO: implement service configuration
+class TodoWebConfiguration(
+    @Valid
+    @NotNull
+    @field:JsonProperty("database")
+    val database: DataSourceFactory = DataSourceFactory()
+) : Configuration()
 

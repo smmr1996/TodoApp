@@ -3,8 +3,8 @@
  */
 package todoweb.resources.impl
 
-import todoweb.db.TodoDao
 import todoweb.resources.TodoDeleteResource
+import todoweb.service.TodoDeleteService
 
 import javax.ws.rs.Consumes
 import javax.ws.rs.DELETE
@@ -25,14 +25,16 @@ import javax.ws.rs.core.Response.Status
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/todos")
 class TodoDeleteResourceImpl(
-    private val todoDao: TodoDao
+    private val todoDeleteService: TodoDeleteService
 ): TodoDeleteResource {
 
     @DELETE
     @Path("/{id}")
     override fun deleteTodoById(@PathParam("id") id: Long): Response {
         return try {
-            Response.ok(todoDao.deleteToDoById(id)).entity("Deleted Successfully").build()
+            Response.ok(todoDeleteService.deleteTodoById(id))
+                .entity("Deleted Successfully")
+                .build()
         } catch (e: NotFoundException) {
             Response.status(Status.NOT_FOUND).entity(e.message).build()
         }

@@ -12,10 +12,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-import todoweb.core.Task
-import todoweb.core.Todo
-import todoweb.db.TodoDao
+import todoweb.core.domain.Task
+import todoweb.core.domain.Todo
 import todoweb.resources.impl.TodoWriteResourceImpl
+import todoweb.service.TodoWriteService
 
 import javax.ws.rs.NotFoundException
 import javax.ws.rs.core.Response
@@ -27,8 +27,8 @@ import javax.ws.rs.core.Response
  */
 class TodoWriteResourceTest {
 
-    private val todoDao = mockk<TodoDao>()
-    private val todoWriteResource = TodoWriteResourceImpl(todoDao)
+    private val todoWriteService = mockk<TodoWriteService>()
+    private val todoWriteResource = TodoWriteResourceImpl(todoWriteService)
 
     @BeforeEach
     fun setUp() {
@@ -40,14 +40,14 @@ class TodoWriteResourceTest {
 
         @Test
         fun `test addTodo success`() {
-            every { todoDao.addTodo(todo) } returns todo
+            every { todoWriteService.addTodo(todo) } returns todo
             val response = todoWriteResource.addTodo(todoJson)
             assertEquals(todo, response.entity)
         }
 
         @Test
         fun `test addTodo fails`() {
-            every { todoDao.addTodo(todo) } throws Exception("E")
+            every { todoWriteService.addTodo(todo) } throws Exception("E")
             val response = todoWriteResource.addTodo(todoJson)
             assertEquals(Response.Status.INTERNAL_SERVER_ERROR.statusCode, response.status)
         }
@@ -58,14 +58,14 @@ class TodoWriteResourceTest {
 
         @Test
         fun `test updateTodoWithId success`() {
-            every { todoDao.updateTodoById(id, todo) } returns todo
+            every { todoWriteService.updateTodoById(id, todo) } returns todo
             val response = todoWriteResource.updateTodoById(id, todoJson)
             assertEquals(todo, response.entity)
         }
 
         @Test
         fun `test updateTodoWithId fails`() {
-            every { todoDao.updateTodoById(id, todo) } throws
+            every { todoWriteService.updateTodoById(id, todo) } throws
                     NotFoundException(NOT_FOUND_TODO_WITH_ID(id))
             val response = todoWriteResource.updateTodoById(id, todoJson)
             assertEquals(NOT_FOUND_TODO_WITH_ID(id), response.entity)
@@ -81,7 +81,7 @@ class TodoWriteResourceTest {
         val todo = Todo(
             id,
             TEST_NAME,
-            TEST_DESCRIPTION, listOf(Task(TEST_NAME, TEST_DESCRIPTION)))
+            TEST_DESCRIPTION, listOf(Task(0L, TEST_NAME, TEST_DESCRIPTION)))
         val todoJson = """
             {
                 "name": "$TEST_NAME",

@@ -3,7 +3,7 @@
  */
 package todoweb.db
 
-import todoweb.core.Todo
+import todoweb.core.domain.Todo
 import todoweb.utils.TodoConstants.Companion.NOT_FOUND_TODO_WITH_ID
 
 import javax.ws.rs.NotFoundException

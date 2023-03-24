@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test
 
 import todoweb.db.TodoDao
 import todoweb.resources.impl.TodoDeleteResourceImpl
+import todoweb.service.TodoDeleteService
 
 import javax.ws.rs.NotFoundException
 import javax.ws.rs.core.Response.Status
@@ -26,8 +27,8 @@ import javax.ws.rs.core.Response.Status
  */
 class TodoDeleteResourceTest {
 
-    private val todoDao = mockk<TodoDao>()
-    private val todoDeleteResource = TodoDeleteResourceImpl(todoDao)
+    private val todoDeleteService = mockk<TodoDeleteService>()
+    private val todoDeleteResource = TodoDeleteResourceImpl(todoDeleteService)
 
     @BeforeEach
     fun setUp() {
@@ -37,7 +38,7 @@ class TodoDeleteResourceTest {
     @Test
     fun `test deleteTodoById when valid id is passed`() {
         val id = id
-        every { todoDao.deleteToDoById(id) } just runs
+        every { todoDeleteService.deleteTodoById(id) } just runs
         val response = todoDeleteResource.deleteTodoById(id)
         assertEquals(Status.OK.statusCode, response.status)
     }
@@ -45,7 +46,7 @@ class TodoDeleteResourceTest {
     @Test
     fun `test deleteTodoById when invalid id is passed`() {
         val id = id
-        every { todoDao.deleteToDoById(id) } throws NotFoundException((NOT_FOUND_TODO_WITH_ID(id)))
+        every { todoDeleteService.deleteTodoById(id) } throws NotFoundException((NOT_FOUND_TODO_WITH_ID(id)))
         val response = todoDeleteResource.deleteTodoById(id)
         assertEquals(Status.NOT_FOUND.statusCode, response.status)
     }

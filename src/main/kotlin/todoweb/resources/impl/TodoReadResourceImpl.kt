@@ -3,8 +3,8 @@
  */
 package todoweb.resources.impl
 
-import todoweb.db.TodoDao
 import todoweb.resources.TodoReadResource
+import todoweb.service.TodoReadService
 
 import javax.ws.rs.Consumes
 import javax.ws.rs.GET
@@ -25,13 +25,13 @@ import javax.ws.rs.core.Response.Status
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/todos")
 class TodoReadResourceImpl(
-    private val todoDao: TodoDao
+    private val todoReadService: TodoReadService
 ) : TodoReadResource {
 
     @GET
     override fun getAll(): Response {
         return try {
-            Response.ok(todoDao.getAll()).build()
+            Response.ok(todoReadService.getAll()).build()
         } catch (e: Exception) {
             return Response
                 .status(Status.INTERNAL_SERVER_ERROR)
@@ -44,7 +44,7 @@ class TodoReadResourceImpl(
     @Path("/{id}")
     override fun getTodoById(@PathParam("id") id: Long): Response {
         return try {
-            Response.ok(todoDao.getTodoById(id)).build()
+            Response.ok(todoReadService.getTodoById(id)).build()
         } catch (e: NotFoundException) {
             Response.status(Status.NOT_FOUND).entity(e.message).build()
         }
