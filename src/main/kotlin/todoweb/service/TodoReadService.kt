@@ -10,7 +10,7 @@ import javax.ws.rs.core.Response
 /**
  * Interface to Read Todos
  *
- * This interface defines the methods to get "To-do".
+ * This interface declares the service methods to get "To-do".
  *
  * @author Syed Mohammad Mehdi
  */

@@ -9,7 +9,7 @@ import todoweb.utils.TodoAppException
 /**
  * Interface to Write Todos
  *
- * This interface defines the methods to write "To-dos".
+ * This interface declares the service methods to write "To-dos".
  *
  * @author Syed Mohammad Mehdi
  */

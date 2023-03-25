@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response
 /**
  * Interface to Delete Todos
  *
- * This interface defines the methods to delete "To-dos" from the Data Source.
+ * This interface declares the REST methods to delete "To-dos" from the Data Source.
  *
  * @author Syed Mohammad Mehdi
  */

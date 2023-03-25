@@ -8,7 +8,7 @@ import javax.ws.rs.core.Response
 /**
  * Interface to Read Todos
  *
- * This interface defines the methods to get "To-do" from the Data Source.
+ * This interface declares the REST methods to get "To-do" from the Data Source.
  *
  * @author Syed Mohammad Mehdi
  */

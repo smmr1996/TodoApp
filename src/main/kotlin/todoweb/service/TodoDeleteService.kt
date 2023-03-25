@@ -10,7 +10,7 @@ import javax.ws.rs.PathParam
 /**
  * Service Interface to Delete Todos
  *
- * This interface defines the methods to delete "To-dos".
+ * This interface declares the service methods to delete "To-dos".
  *
  * @author Syed Mohammad Mehdi
  */

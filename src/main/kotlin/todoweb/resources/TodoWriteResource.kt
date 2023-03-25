@@ -8,7 +8,7 @@ import javax.ws.rs.core.Response
 /**
  * Interface to Write Todos
  *
- * This interface defines the methods to write/update "To-do" into the Data Source.
+ * This interface declares the REST methods to write/update "To-do" into the Data Source.
  *
  * @author Syed Mohammad Mehdi
  */
