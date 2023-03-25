@@ -19,5 +19,5 @@ interface TodoDeleteResource {
      * A Delete method to delete the "To-do" with a particular [id]. Returns a [Response] with
      * Success or Failure message.
      */
-    fun deleteTodoById(@PathParam("id") id: Long): Response
+    fun deleteTodoById(id: Long): Response
 }
