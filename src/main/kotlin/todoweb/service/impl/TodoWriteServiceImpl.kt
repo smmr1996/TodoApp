@@ -5,7 +5,6 @@ package todoweb.service.impl
 
 import io.dropwizard.hibernate.UnitOfWork
 
-import todoweb.core.domain.Task
 import todoweb.core.domain.Todo
 import todoweb.db.TaskDao
 import todoweb.db.TodoDao
@@ -15,6 +14,11 @@ import todoweb.utils.TodoConstants
 
 import java.lang.RuntimeException
 
+/**
+ * Implementation of [TodoWriteService] interface
+ *
+ * @author Syed Mohammad Mehdi
+ */
 class TodoWriteServiceImpl(
     private val todoDao: TodoDao,
     private val taskDao: TaskDao
@@ -24,8 +28,8 @@ class TodoWriteServiceImpl(
     override fun addTodo(todo: Todo): Todo {
         val id = todoDao.insertTodo(todo)
         todo.id = id
-        if (todo.tasks != null) {
-            taskDao.insertTasks(todo.tasks as List<Task>, id)
+        if (!todo.tasks.isNullOrEmpty()) {
+            taskDao.insertTasks(todo.tasks!!, id)
         }
         return todo
     }

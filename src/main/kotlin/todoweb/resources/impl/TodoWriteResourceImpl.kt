@@ -3,8 +3,7 @@
  */
 package todoweb.resources.impl
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-
+import todoweb.core.builder.TodoBuilder
 import todoweb.core.domain.Todo
 import todoweb.resources.TodoWriteResource
 import todoweb.service.TodoWriteService
@@ -38,8 +37,7 @@ class TodoWriteResourceImpl(
     @PUT
     @Path("/{id}")
     override fun updateTodoById(@PathParam("id") id: Long, @QueryParam("todo") todoJson: String): Response {
-        val mapper = jacksonObjectMapper()
-        val todo: Todo = mapper.readValue(todoJson, Todo::class.java)
+        val todo: Todo = TodoBuilder.buildTodoFromJson(todoJson)
         return try {
             Response.ok(todoWriteService.updateTodoById(id, todo))
                 .entity("Successfully updated")
@@ -51,8 +49,7 @@ class TodoWriteResourceImpl(
 
     @POST
     override fun addTodo(@QueryParam("todo") todoJson: String): Response {
-        val mapper = jacksonObjectMapper()
-        val todo: Todo = mapper.readValue(todoJson, Todo::class.java)
+        val todo: Todo = TodoBuilder.buildTodoFromJson(todoJson)
         return try {
             Response.ok(todoWriteService.addTodo(todo)).build()
         } catch (e: RuntimeException) {

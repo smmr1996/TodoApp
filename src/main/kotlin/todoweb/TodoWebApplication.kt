@@ -60,10 +60,3 @@ class TodoWebApplication : Application<TodoWebConfiguration>() {
 fun main(args: Array<String>) {
     TodoWebApplication().run(*args)
 }
-
-/**
- * TODO: Exception handling (DONE)
- * TODO: Writing UTs for services (DONE)
- * TODO: Builder/Factory for Jackson Mapper
- * TODO: Check the Documentation and file formatting (DONE)
- */

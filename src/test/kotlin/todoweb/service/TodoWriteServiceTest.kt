@@ -59,12 +59,19 @@ class TodoWriteServiceTest {
         }
 
         @Test
-        fun `test addTodo with no tasks`() {
+        fun `test addTodo with null tasks`() {
             val todoCopy = todo.copy()
             todoCopy.tasks = null
             every { todoDao.insertTodo(todoCopy) } returns id
             assertEquals(todoCopy, todoWriteService.addTodo(todoCopy))
+        }
 
+        @Test
+        fun `test addTodo with empty tasks`() {
+            val todoCopy = todo.copy()
+            todoCopy.tasks = listOf()
+            every { todoDao.insertTodo(todoCopy) } returns id
+            assertEquals(todoCopy, todoWriteService.addTodo(todoCopy))
         }
     }
 

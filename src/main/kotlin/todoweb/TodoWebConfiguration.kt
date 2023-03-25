@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull
 /**
  * Configuration Class.
  *
- * This class .
+ * This is a configuration class for Dropwizard applications. Reads configs from config.yml.
  *
  * @author Syed Mohammad Mehdi
  */
