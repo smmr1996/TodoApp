@@ -32,7 +32,7 @@ interface TodoDao: SqlObject {
     @SqlUpdate("DELETE FROM todo WHERE id = :id")
     fun deleteById(@Bind("id") id: Long)
 
-    @SqlUpdate("INSERT INTO todo (id, name, description) VALUES (:id, :name, :description)")
+    @SqlUpdate("INSERT INTO todo (id, name, description) VALUES (0, :name, :description)")
     @GetGeneratedKeys
     fun insertTodo(@BindBean todo: Todo): Long
 
