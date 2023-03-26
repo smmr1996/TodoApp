@@ -3,7 +3,6 @@
  */
 package todoweb.resources
 
-import javax.ws.rs.PathParam
 import javax.ws.rs.core.Response
 
 /**

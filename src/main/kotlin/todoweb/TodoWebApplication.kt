@@ -37,19 +37,23 @@ class TodoWebApplication : Application<TodoWebConfiguration>() {
     }
 
     override fun run(configuration: TodoWebConfiguration, environment: Environment) {
+        // DB Config and DAO creation
         val factory = JdbiFactory()
         val jdbi = factory.build(environment, configuration.database, "mysql")
         val todoDao = jdbi.onDemand(TodoDao::class.java)
         val taskDao = jdbi.onDemand(TaskDao::class.java)
 
+        // Services creation
         val todoReadService = TodoReadServiceImpl(todoDao, taskDao)
         val todoDeleteService = TodoDeleteServiceImpl(todoDao, taskDao)
         val todoWriteService = TodoWriteServiceImpl(todoDao, taskDao)
 
+        // Resources/Facade creation
         val readResource: TodoReadResource = TodoReadResourceImpl(todoReadService)
         val writeResource: TodoWriteResource = TodoWriteResourceImpl(todoWriteService)
         val deleteResource: TodoDeleteResource = TodoDeleteResourceImpl(todoDeleteService)
 
+        // Register resources
         environment.jersey().register(readResource)
         environment.jersey().register(writeResource)
         environment.jersey().register(deleteResource)
